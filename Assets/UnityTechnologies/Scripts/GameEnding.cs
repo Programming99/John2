@@ -18,6 +18,14 @@ public class GameEnding : MonoBehaviour
     [SerializeField]
     private CanvasGroup caughtBackgroundImageGroup = null;
 
+    [Header("성공 사운드")]
+    [SerializeField]
+    private AudioSource exitAudio;
+    [Header ("실패 사운드")]
+    [SerializeField]
+    private AudioSource caughtAudio;
+    private bool hasAudioPlayed = false;
+
     private bool isPlayerExit = false;
     private bool isPlayerCaught = false;
 
@@ -27,16 +35,22 @@ public class GameEnding : MonoBehaviour
     {
         if (isPlayerExit == true)
         {
-            EndLevel(exitBackgroundImageGroup, false);
+            EndLevel(exitBackgroundImageGroup, false, exitAudio);
         }
         else if(isPlayerCaught == true)
         {
-            EndLevel(caughtBackgroundImageGroup);
+            EndLevel(caughtBackgroundImageGroup, true, caughtAudio);
         }
     }
 
-    private void EndLevel(CanvasGroup imageGroup, bool doRestart=true)
+    private void EndLevel(CanvasGroup imageGroup, bool doRestart, AudioSource audioSource)
     {
+        if (!hasAudioPlayed)
+        {
+            audioSource.Play();
+            hasAudioPlayed = true;
+        }
+
         timer += Time.deltaTime;
         // timer = timer + Time.deltaTime;
 
@@ -53,6 +67,7 @@ public class GameEnding : MonoBehaviour
                 Application.Quit();
             }            
         }
+
     }
 
     private void OnTriggerEnter(Collider other)

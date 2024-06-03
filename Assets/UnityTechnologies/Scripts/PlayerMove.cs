@@ -8,6 +8,7 @@ public class PlayerMove : MonoBehaviour
     private Animator animator;
     private Rigidbody rb;
     private Quaternion rotation = Quaternion.identity;
+    private AudioSource audioSource;
 
     // HeaderAttribute : 변수에 설명을 넣을 때 사용
     [HeaderAttribute("회전 속도")]
@@ -18,7 +19,9 @@ public class PlayerMove : MonoBehaviour
         // GetComponent : 컴퍼넌트를 불러옴
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
     }
+
 	void FixedUpdate()
 	{
         // horizontal : 가로축 입력
@@ -37,6 +40,16 @@ public class PlayerMove : MonoBehaviour
         bool hasVerticalInput = !Mathf.Approximately(vertical, 0f);
         bool isWalking = hasHorizontalInput || hasVerticalInput;
         animator.SetBool("IsWalking", isWalking);
+
+        //걸을 때 발자국 소리 on/off : iswalking으로 채크
+        if (isWalking)
+        {
+            audioSource.Play();
+        }
+        else
+        {
+            audioSource.Stop();
+        }
 
         // desiredFoward : 바라볼 방향 계산
         Vector3 desiredFoward = Vector3.RotateTowards(transform.forward, 
